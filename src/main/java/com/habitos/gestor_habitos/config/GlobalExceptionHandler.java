@@ -1,5 +1,6 @@
 package com.habitos.gestor_habitos.config;
 
+import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,5 +21,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, String>> handleForbiddenException(ForbiddenException ex) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("erro", "ação proibida");
+        erro.put("mensagem", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(erro);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado: " + ex.getMessage());
     }
 }
