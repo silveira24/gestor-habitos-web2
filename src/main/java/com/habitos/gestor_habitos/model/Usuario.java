@@ -38,4 +38,8 @@ public class Usuario {
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Perfil perfil;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private java.util.List<Habito> habitos = new java.util.ArrayList<>();
 }
