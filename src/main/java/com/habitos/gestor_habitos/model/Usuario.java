@@ -1,5 +1,6 @@
 package com.habitos.gestor_habitos.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,7 @@ public class Usuario {
     @Column(nullable = false)
     private RoleUsuario role;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "perfil_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Perfil perfil;
 }

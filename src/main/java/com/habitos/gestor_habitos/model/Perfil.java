@@ -1,8 +1,10 @@
 package com.habitos.gestor_habitos.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Data
 @Entity
@@ -23,4 +25,10 @@ public class Perfil {
 
     private Integer nivel;
     private Integer pontosExperiencia;
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    @JsonBackReference
+    private Usuario usuario;
 }
