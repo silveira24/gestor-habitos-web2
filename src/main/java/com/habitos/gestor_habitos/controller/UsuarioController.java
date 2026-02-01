@@ -1,5 +1,7 @@
 package com.habitos.gestor_habitos.controller;
 
+import com.habitos.gestor_habitos.dto.AtualizarRoleDTO;
+import com.habitos.gestor_habitos.dto.AtualizarSenhaUsuarioDTO;
 import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,5 +47,19 @@ public class UsuarioController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PatchMapping("/{email}/senha")
+    @Operation(summary = "Atualizar a senha do usuário", description = "Requer a senha atual e a nova senha")
+    public ResponseEntity<Void> atualizarSenha(@PathVariable String email, @Valid @RequestBody AtualizarSenhaUsuarioDTO dto) {
+        service.atualizarSenha(email, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{email}/role")
+    @Operation(summary = "Atualizar a role do usuário", description = "Requer a nova role. Somente o SUPER_ADMIN pode realizar esta ação.")
+    public ResponseEntity<Void> atualizarRole(@PathVariable String email, @Valid @RequestBody AtualizarRoleDTO dto) {
+        service.atualizarRole(email, dto);
+        return ResponseEntity.ok().build();
     }
 }
