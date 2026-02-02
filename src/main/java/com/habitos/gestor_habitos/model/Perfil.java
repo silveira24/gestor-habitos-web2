@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,4 +38,12 @@ public class Perfil {
     @JoinColumn(name = "usuario_id")
     @JsonBackReference
     private Usuario usuario;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "perfil_emblemas",
+            joinColumns = @JoinColumn(name = "perfil_id"),
+            inverseJoinColumns = @JoinColumn(name = "emblema_id")
+    )
+    private List<Emblema> emblemas = new ArrayList<>();
 }
