@@ -2,17 +2,16 @@ package com.habitos.gestor_habitos.service;
 
 import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
 import com.habitos.gestor_habitos.config.exceptions.ResouceNotFoundException;
-import com.habitos.gestor_habitos.dto.AtualizarRoleDTO;
-import com.habitos.gestor_habitos.dto.AtualizarSenhaUsuarioDTO;
+import com.habitos.gestor_habitos.dto.UsuarioDTO;
 import com.habitos.gestor_habitos.model.Perfil;
 import com.habitos.gestor_habitos.model.RoleUsuario;
 import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class UsuarioService {
@@ -20,29 +19,45 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Usuario criarUsuario(Usuario usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+    @Transactional
+    public UsuarioDTO.usuarioResponse criarUsuario(UsuarioDTO.usuarioRequest usuarioRequest) {
+        if (usuarioRepository.existsByEmail(usuarioRequest.email())) {
             throw new IllegalArgumentException("Email já cadastrado");
         }
+        Usuario usuario = new Usuario();
+        usuario.setEmail(usuarioRequest.email());
+        usuario.setSenha(usuarioRequest.senha());
+        usuario.setRole(RoleUsuario.USER);
 
-        if (usuario.getPerfil() == null) {
-            Perfil novoPerfil = new Perfil();
-            novoPerfil.setNomeExibicao("Novo Usuário");
-            usuario.setPerfil(novoPerfil);
-        }
+        Perfil novoPerfil = new Perfil();
+        novoPerfil.setNomeExibicao("Novo Usuário");
 
-        return usuarioRepository.save(usuario);
+        usuario.setPerfil(novoPerfil);
+        novoPerfil.setUsuario(usuario);
+
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+        return new UsuarioDTO.usuarioResponse(usuarioSalvo);
+
     }
 
-    public List<Usuario> listarUsuarios() {
-        return usuarioRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<UsuarioDTO.usuarioResponse> listarUsuarios() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(UsuarioDTO.usuarioResponse::new)
+                .toList();
     }
 
-    public Usuario buscarUsuarioPorEmail(String email) {
-        return usuarioRepository.findByEmail((email)).orElse(null);
+    @Transactional(readOnly = true)
+    public UsuarioDTO.usuarioResponse buscarUsuarioPorEmail(String email) {
+        Usuario usuario= usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
+
+        return new UsuarioDTO.usuarioResponse(usuario);
     }
 
-    public void atualizarSenha(String email, AtualizarSenhaUsuarioDTO dto) {
+    public void atualizarSenha(String email, UsuarioDTO.usuarioAlterarSenha dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
@@ -58,7 +73,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public void atualizarRole(String email, AtualizarRoleDTO dto) {
+    public void atualizarRole(String email, UsuarioDTO.usuarioAlterarRole dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
