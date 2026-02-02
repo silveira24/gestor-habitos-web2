@@ -36,14 +36,16 @@ public class HabitoDTO {
             @Schema(description = "Dias da semana em que o hábito deve ser realizado", example = """
                        ["SEGUNDA", "QUARTA", "SEXTA"]
                     """)
-            Set<DiaSemana> diasSemana
+            Set<DiaSemana> diasSemana,
+            Integer frequencia
     ) {
         public Response (Habito habito) {
             this(
                     habito.getId(),
                     habito.getTitulo(),
                     habito.getDescricao(),
-                    habito.getDiasSemana()
+                    habito.getDiasSemana(),
+                    habito.getFrequencia()
             );
         }
     }

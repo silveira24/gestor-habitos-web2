@@ -30,11 +30,6 @@ public class Habito {
     @Size(max = 200, message = "A descrição deve ter no máximo 200 caracteres")
     private String descricao;
 
-    @NotNull(message = "A frequência do hábito não pode ser nula")
-    @Min(value = 1, message = "A frequência mínima é 1")
-    @Max(value = 7, message = "A frequência máxima é 7")
-    private Integer frequencia;
-
     @ElementCollection(targetClass = DiaSemana.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "habito_dias_semana", joinColumns = @JoinColumn(name = "habito_id"))
     @Column(name = "dia_semana_codigo")
@@ -48,4 +43,8 @@ public class Habito {
     @OneToMany(mappedBy = "habito", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<Registro> registros;
+
+    public Integer getFrequencia() {
+        return diasSemana != null ? diasSemana.size() : 0;
+    }
 }

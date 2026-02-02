@@ -30,7 +30,6 @@ public class HabitoService {
         novoHabito.setTitulo(habito.titulo());
         novoHabito.setDescricao(habito.descricao());
         novoHabito.setDiasSemana(habito.diasSemana());
-        novoHabito.setFrequencia(habito.diasSemana().size());
         novoHabito.setUsuario(usuario);
 
         Habito habitoSalvo = habitoRepository.save(novoHabito);
@@ -71,7 +70,6 @@ public class HabitoService {
         }
         if (dto.diasSemana() != null && !dto.diasSemana().isEmpty()) {
             habito.setDiasSemana(dto.diasSemana());
-            habito.setFrequencia(dto.diasSemana().size());
         }
 
         return new HabitoDTO.Response(habitoRepository.save(habito));
