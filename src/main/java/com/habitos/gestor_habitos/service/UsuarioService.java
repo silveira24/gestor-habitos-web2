@@ -20,13 +20,13 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Transactional
-    public UsuarioDTO.usuarioResponse criarUsuario(UsuarioDTO.usuarioRequest usuarioRequest) {
-        if (usuarioRepository.existsByEmail(usuarioRequest.email())) {
+    public UsuarioDTO.Response criarUsuario(UsuarioDTO.Request Request) {
+        if (usuarioRepository.existsByEmail(Request.email())) {
             throw new IllegalArgumentException("Email já cadastrado");
         }
         Usuario usuario = new Usuario();
-        usuario.setEmail(usuarioRequest.email());
-        usuario.setSenha(usuarioRequest.senha());
+        usuario.setEmail(Request.email());
+        usuario.setSenha(Request.senha());
         usuario.setRole(RoleUsuario.USER);
 
         Perfil novoPerfil = new Perfil();
@@ -37,27 +37,27 @@ public class UsuarioService {
 
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-        return new UsuarioDTO.usuarioResponse(usuarioSalvo);
+        return new UsuarioDTO.Response(usuarioSalvo);
 
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioDTO.usuarioResponse> listarUsuarios() {
+    public List<UsuarioDTO.Response> listarUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(UsuarioDTO.usuarioResponse::new)
+                .map(UsuarioDTO.Response::new)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public UsuarioDTO.usuarioResponse buscarUsuarioPorEmail(String email) {
+    public UsuarioDTO.Response buscarUsuarioPorEmail(String email) {
         Usuario usuario= usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
-        return new UsuarioDTO.usuarioResponse(usuario);
+        return new UsuarioDTO.Response(usuario);
     }
 
-    public void atualizarSenha(String email, UsuarioDTO.usuarioAlterarSenha dto) {
+    public void atualizarSenha(String email, UsuarioDTO.AlterarSenha dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
@@ -73,7 +73,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public void atualizarRole(String email, UsuarioDTO.usuarioAlterarRole dto) {
+    public void atualizarRole(String email, UsuarioDTO.AlterarRole dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 

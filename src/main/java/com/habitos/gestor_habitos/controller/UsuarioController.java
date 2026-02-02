@@ -21,32 +21,32 @@ public class UsuarioController {
 
     @PostMapping
     @Operation(summary = "Criar uma nova conta de usuário")
-    public ResponseEntity<UsuarioDTO.usuarioResponse> criarUsuario(@Valid @RequestBody UsuarioDTO.usuarioRequest usuario) {
+    public ResponseEntity<UsuarioDTO.Response> criarUsuario(@Valid @RequestBody UsuarioDTO.Request usuario) {
         return ResponseEntity.status(201).body(service.criarUsuario(usuario));
     }
 
     @GetMapping
     @Operation(summary = "Listar todos os usuários")
-    public ResponseEntity<List<UsuarioDTO.usuarioResponse>> listarUsuarios() {
+    public ResponseEntity<List<UsuarioDTO.Response>> listarUsuarios() {
         return ResponseEntity.ok(service.listarUsuarios());
     }
 
     @GetMapping("/{email}")
     @Operation(summary = "Buscar usuário por email")
-    public ResponseEntity<UsuarioDTO.usuarioResponse> buscarUsuarioPorEmail(@PathVariable String email) {
+    public ResponseEntity<UsuarioDTO.Response> buscarUsuarioPorEmail(@PathVariable String email) {
         return ResponseEntity.ok(service.buscarUsuarioPorEmail(email));
     }
 
     @PatchMapping("/{email}/senha")
     @Operation(summary = "Atualizar a senha do usuário", description = "Requer a senha atual e a nova senha")
-    public ResponseEntity<Void> atualizarSenha(@PathVariable String email, @Valid @RequestBody UsuarioDTO.usuarioAlterarSenha dto) {
+    public ResponseEntity<Void> atualizarSenha(@PathVariable String email, @Valid @RequestBody UsuarioDTO.AlterarSenha dto) {
         service.atualizarSenha(email, dto);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{email}/role")
     @Operation(summary = "Atualizar a role do usuário", description = "Requer a nova role. Somente o SUPER_ADMIN pode realizar esta ação.")
-    public ResponseEntity<Void> atualizarRole(@PathVariable String email, @Valid @RequestBody UsuarioDTO.usuarioAlterarRole dto) {
+    public ResponseEntity<Void> atualizarRole(@PathVariable String email, @Valid @RequestBody UsuarioDTO.AlterarRole dto) {
         service.atualizarRole(email, dto);
         return ResponseEntity.ok().build();
     }
