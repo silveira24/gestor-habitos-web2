@@ -58,4 +58,11 @@ public class UsuarioController {
         service.atualizarPerfil(email, dto);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{email}" )
+    @Operation(summary = "Deletar um usuário", description = "Deleta o usuário identificado pelo email fornecido.")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable String email) {
+        service.deletarUsuario(email);
+        return ResponseEntity.noContent().build();
+    }
 }

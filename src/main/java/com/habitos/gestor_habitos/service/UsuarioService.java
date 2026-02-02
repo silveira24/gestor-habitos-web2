@@ -100,4 +100,15 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
     }
+
+    public void deletarUsuario(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
+
+        if (usuario.getRole().equals(RoleUsuario.SUPER_ADMIN)) {
+            throw new ForbiddenException("Não é permitido deletar um usuário SUPER_ADMIN");
+        }
+
+        usuarioRepository.delete(usuario);
+    }
 }
