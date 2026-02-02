@@ -4,7 +4,7 @@ import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
 import com.habitos.gestor_habitos.config.exceptions.ResouceNotFoundException;
 import com.habitos.gestor_habitos.dto.UsuarioDTO;
 import com.habitos.gestor_habitos.model.Perfil;
-import com.habitos.gestor_habitos.model.RoleUsuario;
+import com.habitos.gestor_habitos.model.enums.RoleUsuario;
 import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

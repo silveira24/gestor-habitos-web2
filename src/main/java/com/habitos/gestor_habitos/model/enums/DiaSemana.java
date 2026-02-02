@@ -1,4 +1,4 @@
-package com.habitos.gestor_habitos.model;
+package com.habitos.gestor_habitos.model.enums;
 
 import lombok.Getter;
 

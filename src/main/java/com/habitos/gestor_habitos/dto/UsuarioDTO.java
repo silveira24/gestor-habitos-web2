@@ -1,6 +1,6 @@
 package com.habitos.gestor_habitos.dto;
 
-import com.habitos.gestor_habitos.model.RoleUsuario;
+import com.habitos.gestor_habitos.model.enums.RoleUsuario;
 import com.habitos.gestor_habitos.model.Usuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

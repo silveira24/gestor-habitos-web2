@@ -1,6 +1,7 @@
 package com.habitos.gestor_habitos.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.habitos.gestor_habitos.model.enums.RoleUsuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
