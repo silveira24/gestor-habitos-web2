@@ -1,6 +1,7 @@
 package com.habitos.gestor_habitos.config;
 
 import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
+import com.habitos.gestor_habitos.config.exceptions.ResouceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,15 @@ public class GlobalExceptionHandler {
         erro.put("mensagem", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(erro);
+    }
+
+    @ExceptionHandler(ResouceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResouceNotFoundException ex) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("erro", "recurso não encontrado");
+        erro.put("mensagem", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
     @ExceptionHandler(Exception.class)
