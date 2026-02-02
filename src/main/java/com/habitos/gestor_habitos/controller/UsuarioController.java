@@ -1,5 +1,6 @@
 package com.habitos.gestor_habitos.controller;
 
+import com.habitos.gestor_habitos.dto.PerfilDTO;
 import com.habitos.gestor_habitos.dto.UsuarioDTO;
 import com.habitos.gestor_habitos.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +49,13 @@ public class UsuarioController {
     @Operation(summary = "Atualizar a role do usuário", description = "Requer a nova role. Somente o SUPER_ADMIN pode realizar esta ação.")
     public ResponseEntity<Void> atualizarRole(@PathVariable String email, @Valid @RequestBody UsuarioDTO.AlterarRole dto) {
         service.atualizarRole(email, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{email}/perfil")
+    @Operation(summary = "Atualizar o perfil do usuário", description = "Permite atualizar informações do perfil, exceto a senha e a role.")
+    public ResponseEntity<Void> atualizarPerfil(@PathVariable String email, @Valid @RequestBody PerfilDTO.AtualizarPerfil dto) {
+        service.atualizarPerfil(email, dto);
         return ResponseEntity.ok().build();
     }
 }

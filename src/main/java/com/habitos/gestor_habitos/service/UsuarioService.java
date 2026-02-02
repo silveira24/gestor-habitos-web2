@@ -2,6 +2,7 @@ package com.habitos.gestor_habitos.service;
 
 import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
 import com.habitos.gestor_habitos.config.exceptions.ResouceNotFoundException;
+import com.habitos.gestor_habitos.dto.PerfilDTO;
 import com.habitos.gestor_habitos.dto.UsuarioDTO;
 import com.habitos.gestor_habitos.model.Perfil;
 import com.habitos.gestor_habitos.model.enums.RoleUsuario;
@@ -82,6 +83,21 @@ public class UsuarioService {
         }
 
         usuario.setRole(dto.novaRole());
+        usuarioRepository.save(usuario);
+    }
+
+    public void atualizarPerfil(String email, PerfilDTO.AtualizarPerfil dto) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
+
+        Perfil perfil = usuario.getPerfil();
+        if (dto.nomeExibicao() != null) {
+            perfil.setNomeExibicao(dto.nomeExibicao());
+        }
+        if (dto.bio() != null) {
+            perfil.setBio(dto.bio());
+        }
+
         usuarioRepository.save(usuario);
     }
 }
