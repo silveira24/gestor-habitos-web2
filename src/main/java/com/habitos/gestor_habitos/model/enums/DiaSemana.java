@@ -2,6 +2,8 @@ package com.habitos.gestor_habitos.model.enums;
 
 import lombok.Getter;
 
+import java.time.DayOfWeek;
+
 @Getter
 public enum DiaSemana {
     DOMINGO(1, "Domingo"),
@@ -28,5 +30,17 @@ public enum DiaSemana {
             }
         }
         throw new IllegalArgumentException("Código inválido para Dia da Semana: " + codigo);
+    }
+
+    public static DiaSemana fromJavaDayOfWeek(DayOfWeek day) {
+        return switch (day) {
+            case MONDAY -> SEGUNDA;
+            case TUESDAY -> TERCA;
+            case WEDNESDAY -> QUARTA;
+            case THURSDAY -> QUINTA;
+            case FRIDAY -> SEXTA;
+            case SATURDAY -> SABADO;
+            case SUNDAY -> DOMINGO;
+        };
     }
 }

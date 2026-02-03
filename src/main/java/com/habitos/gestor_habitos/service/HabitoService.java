@@ -22,6 +22,9 @@ public class HabitoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private RegistroService registroService;
+
     @Transactional
     public HabitoDTO.Response criarHabito(String email, HabitoDTO.Request habito) {
         Usuario usuario = usuarioRepository.findByEmail(email)
@@ -33,6 +36,7 @@ public class HabitoService {
         novoHabito.setUsuario(usuario);
 
         Habito habitoSalvo = habitoRepository.save(novoHabito);
+        registroService.gerarRegistrosIniciais(habitoSalvo);
         return new HabitoDTO.Response(habitoSalvo);
     }
 

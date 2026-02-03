@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,6 +26,7 @@ public class Registro {
     @NotNull(message = "A data do registro não pode ser nula")
     private LocalDate data;
     private Boolean concluido = false;
+    private LocalDateTime dataConclusao;
 
     @ManyToOne
     @JoinColumn(name = "habito_id", nullable = false)
