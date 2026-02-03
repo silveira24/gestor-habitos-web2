@@ -1,53 +1,57 @@
 package com.habitos.gestor_habitos.controller;
 
 import com.habitos.gestor_habitos.dto.HabitoDTO;
+import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.service.HabitoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/habitos")
 @Tag(name = "Hábitos", description = "Operações relacionadas a hábitos")
+@SecurityRequirement(name = "bearer-key")
 public class HabitoController {
 
     @Autowired
     private HabitoService service;
 
-    @PostMapping("{email}/habitos")
+    @PostMapping
     @Operation(summary = "Criar um novo hábito para o usuário" )
-    public ResponseEntity<HabitoDTO.Response> criarHabito(@PathVariable String email, @Valid @RequestBody HabitoDTO.Request habito) {
-        return ResponseEntity.status(201).body(service.criarHabito(email, habito));
+    public ResponseEntity<HabitoDTO.Response> criarHabito(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody HabitoDTO.Request habito) {
+        return ResponseEntity.status(201).body(service.criarHabito(usuarioLogado.getEmail(), habito));
     }
 
-    @GetMapping("{email}/habitos")
+    @GetMapping
     @Operation(summary = "Listar todos os hábitos do usuário" )
-    public ResponseEntity<List<HabitoDTO.Response>> listarHabitos(@PathVariable String email) {
-        return ResponseEntity.ok(service.listarHabitos(email));
+    public ResponseEntity<List<HabitoDTO.Response>> listarHabitos(@AuthenticationPrincipal Usuario usuarioLogado) {
+        return ResponseEntity.ok(service.listarHabitos(usuarioLogado.getEmail()));
     }
 
-    @GetMapping("{email}/habitos/{id}" )
-    @Operation(summary = "Buscar hábito de um usuário por ID" )
-    public ResponseEntity<HabitoDTO.Response> buscarHabitoPorId(@PathVariable String email, @PathVariable String id) {
-        return ResponseEntity.ok(service.buscarHabitoPorId(email, id));
+    @GetMapping("/{id}" )
+    @Operation(summary = "Buscar hábito por ID" )
+    public ResponseEntity<HabitoDTO.Response> buscarHabitoPorId(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String id) {
+        return ResponseEntity.ok(service.buscarHabitoPorId(usuarioLogado.getEmail(), id));
     }
 
-    @DeleteMapping("{email}/habitos/{id}")
-    @Operation(summary = "Deletar hábito de um usuário por ID" )
-    public ResponseEntity<Void> deletarHabitoPorId(@PathVariable String email, @PathVariable String id) {
-        service.deletarHabito(email, id);
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar hábito por ID" )
+    public ResponseEntity<Void> deletarHabitoPorId(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String id) {
+        service.deletarHabito(usuarioLogado.getEmail(), id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{email}/habitos/{id}")
-    @Operation(summary = "Atualizar hábito de um usuário por ID" )
-    public ResponseEntity<HabitoDTO.Response> atualizarHabitoPorId(@PathVariable String email, @PathVariable String id,
+    @PatchMapping("/{id}")
+    @Operation(summary = "Atualizar hábito por ID" )
+    public ResponseEntity<HabitoDTO.Response> atualizarHabitoPorId(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String id,
                                                               @Valid @RequestBody HabitoDTO.AtualizarHabito habitoAtualizado) {
-        return ResponseEntity.ok(service.atualizarHabito(email, id, habitoAtualizado));
+        return ResponseEntity.ok(service.atualizarHabito(usuarioLogado.getEmail(), id, habitoAtualizado));
     }
 }

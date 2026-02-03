@@ -9,6 +9,7 @@ import com.habitos.gestor_habitos.model.enums.RoleUsuario;
 import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional
     public UsuarioDTO.Response criarUsuario(UsuarioDTO.Request Request) {
         if (usuarioRepository.existsByEmail(Request.email())) {
@@ -27,7 +31,7 @@ public class UsuarioService {
         }
         Usuario usuario = new Usuario();
         usuario.setEmail(Request.email());
-        usuario.setSenha(Request.senha());
+        usuario.setSenha(passwordEncoder.encode(Request.senha()));
         usuario.setRole(RoleUsuario.USER);
 
         Perfil novoPerfil = new Perfil();
@@ -62,27 +66,15 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
-        if (!usuario.getSenha().equals(dto.senhaAtual())) {
+        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
             throw new IllegalArgumentException("Senha atual incorreta");
         }
 
-        if (usuario.getSenha().equals(dto.novaSenha())) {
+        if (passwordEncoder.matches(dto.novaSenha(), usuario.getSenha())) {
             throw new IllegalArgumentException("A nova senha deve ser diferente da senha atual");
         }
 
-        usuario.setSenha(dto.novaSenha());
-        usuarioRepository.save(usuario);
-    }
-
-    public void atualizarRole(String email, UsuarioDTO.AlterarRole dto) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
-
-        if (usuario.getRole() == RoleUsuario.SUPER_ADMIN) {
-            throw new ForbiddenException("Não é permitido alterar a role de um SUPER_ADMIN");
-        }
-
-        usuario.setRole(dto.novaRole());
+        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
         usuarioRepository.save(usuario);
     }
 
@@ -105,8 +97,8 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
-        if (usuario.getRole().equals(RoleUsuario.SUPER_ADMIN)) {
-            throw new ForbiddenException("Não é permitido deletar um usuário SUPER_ADMIN");
+        if (usuario.getRole().equals(RoleUsuario.ADMIN)) {
+            throw new ForbiddenException("Não é permitido deletar um usuário ADMIN");
         }
 
         usuarioRepository.delete(usuario);

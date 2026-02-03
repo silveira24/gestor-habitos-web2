@@ -9,6 +9,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(org.springframework.web.servlet.config.annotation.PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
+        configurer.addPathPrefix("/api", c ->
+                c.isAnnotationPresent(RestController.class) &&
+                        c.getPackageName().startsWith("com.habitos.gestor_habitos")
+        );
     }
 }

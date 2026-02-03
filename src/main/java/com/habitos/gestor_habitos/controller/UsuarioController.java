@@ -2,12 +2,15 @@ package com.habitos.gestor_habitos.controller;
 
 import com.habitos.gestor_habitos.dto.PerfilDTO;
 import com.habitos.gestor_habitos.dto.UsuarioDTO;
+import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,42 +30,49 @@ public class UsuarioController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar todos os usuários")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Listar todos os usuários (ADMIN apenas)")
     public ResponseEntity<List<UsuarioDTO.Response>> listarUsuarios() {
         return ResponseEntity.ok(service.listarUsuarios());
     }
 
-    @GetMapping("/{email}")
-    @Operation(summary = "Buscar usuário por email")
-    public ResponseEntity<UsuarioDTO.Response> buscarUsuarioPorEmail(@PathVariable String email) {
-        return ResponseEntity.ok(service.buscarUsuarioPorEmail(email));
+    @GetMapping("/me")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Buscar dados do usuário autenticado")
+    public ResponseEntity<UsuarioDTO.Response> buscarUsuarioPorEmail(@AuthenticationPrincipal Usuario usuarioLogado) {
+        return ResponseEntity.ok(new UsuarioDTO.Response(usuarioLogado));
     }
 
-    @PatchMapping("/{email}/senha")
-    @Operation(summary = "Atualizar a senha do usuário", description = "Requer a senha atual e a nova senha")
-    public ResponseEntity<Void> atualizarSenha(@PathVariable String email, @Valid @RequestBody UsuarioDTO.AlterarSenha dto) {
-        service.atualizarSenha(email, dto);
+    @PatchMapping("/me/senha")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Atualizar a senha do usuário autenticado")
+    public ResponseEntity<Void> atualizarSenha(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody UsuarioDTO.AlterarSenha dto) {
+        service.atualizarSenha(usuarioLogado.getEmail(), dto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{email}/role")
-    @Operation(summary = "Atualizar a role do usuário", description = "Requer a nova role. Somente o SUPER_ADMIN pode realizar esta ação.")
-    public ResponseEntity<Void> atualizarRole(@PathVariable String email, @Valid @RequestBody UsuarioDTO.AlterarRole dto) {
-        service.atualizarRole(email, dto);
+    @PatchMapping("/me/perfil")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Atualizar o perfil do usuário autenticado", description = "Permite atualizar informações do perfil, exceto a senha e a role.")
+    public ResponseEntity<Void> atualizarPerfil(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody PerfilDTO.AtualizarPerfil dto) {
+        service.atualizarPerfil(usuarioLogado.getEmail(), dto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{email}/perfil")
-    @Operation(summary = "Atualizar o perfil do usuário", description = "Permite atualizar informações do perfil, exceto a senha e a role.")
-    public ResponseEntity<Void> atualizarPerfil(@PathVariable String email, @Valid @RequestBody PerfilDTO.AtualizarPerfil dto) {
-        service.atualizarPerfil(email, dto);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/me" )
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Deletar a conta do usuário autenticado")
+    public ResponseEntity<Void> deletarUsuario(@AuthenticationPrincipal Usuario usuarioLogado) {
+        service.deletarUsuario(usuarioLogado.getEmail());
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{email}" )
-    @Operation(summary = "Deletar um usuário", description = "Deleta o usuário identificado pelo email fornecido.")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable String email) {
+    @DeleteMapping("/{email}")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Deletar um usuário por email (ADMIN apenas)")
+    public ResponseEntity<Void> deletarUsuarioPorEmail(@PathVariable String email) {
         service.deletarUsuario(email);
         return ResponseEntity.noContent().build();
     }
+
 }
