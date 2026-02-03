@@ -31,7 +31,7 @@ public class UsuarioService {
         }
         Usuario usuario = new Usuario();
         usuario.setEmail(Request.email());
-        usuario.setSenha(passwordEncoder.encode(Request.senha()));
+        usuario.setSenha(passwordEncoder.encode(Request.password()));
         usuario.setRole(RoleUsuario.USER);
 
         Perfil novoPerfil = new Perfil();
@@ -62,35 +62,35 @@ public class UsuarioService {
         return new UsuarioDTO.Response(usuario);
     }
 
-    public void atualizarSenha(String email, UsuarioDTO.AlterarSenha dto) {
+    public void atualizarSenha(String email, UsuarioDTO.ChangePasswordRequest dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
-        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
+        if (!passwordEncoder.matches(dto.currentPassword(), usuario.getSenha())) {
             throw new IllegalArgumentException("Senha atual incorreta");
         }
 
-        if (passwordEncoder.matches(dto.novaSenha(), usuario.getSenha())) {
-            throw new IllegalArgumentException("A nova senha deve ser diferente da senha atual");
+        if (passwordEncoder.matches(dto.newPassword(), usuario.getSenha())) {
+            throw new IllegalArgumentException("A nova password deve ser diferente da password atual");
         }
 
-        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        usuario.setSenha(passwordEncoder.encode(dto.newPassword()));
         usuarioRepository.save(usuario);
     }
 
-    public void atualizarPerfil(String email, PerfilDTO.AtualizarPerfil dto) {
+    public UsuarioDTO.Response atualizarPerfil(String email, PerfilDTO.AtualizarPerfil dto) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
 
         Perfil perfil = usuario.getPerfil();
-        if (dto.nomeExibicao() != null) {
-            perfil.setNomeExibicao(dto.nomeExibicao());
+        if (dto.displayName() != null) {
+            perfil.setNomeExibicao(dto.displayName());
         }
         if (dto.bio() != null) {
             perfil.setBio(dto.bio());
         }
 
-        usuarioRepository.save(usuario);
+        return new UsuarioDTO.Response(usuarioRepository.save(usuario));
     }
 
     public void deletarUsuario(String email) {

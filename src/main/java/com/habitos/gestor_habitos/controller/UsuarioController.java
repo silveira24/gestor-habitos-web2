@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/usuarios")
-@Tag(name = "Usuários", description = "Operações relacionadas a usuários")
+@RequestMapping("/v1/users")
+@Tag(name = "Users", description = "Operações relacionadas a usuários")
 public class UsuarioController {
 
     @Autowired
@@ -43,20 +43,20 @@ public class UsuarioController {
         return ResponseEntity.ok(new UsuarioDTO.Response(usuarioLogado));
     }
 
-    @PatchMapping("/me/senha")
+    @PatchMapping("/me/password")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Atualizar a senha do usuário autenticado")
-    public ResponseEntity<Void> atualizarSenha(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody UsuarioDTO.AlterarSenha dto) {
+    @Operation(summary = "Atualizar a password do usuário autenticado")
+    public ResponseEntity<Void> atualizarSenha(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody UsuarioDTO.ChangePasswordRequest dto) {
         service.atualizarSenha(usuarioLogado.getEmail(), dto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/me/perfil")
+    @PatchMapping("/me/profile")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Atualizar o perfil do usuário autenticado", description = "Permite atualizar informações do perfil, exceto a senha e a role.")
-    public ResponseEntity<Void> atualizarPerfil(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody PerfilDTO.AtualizarPerfil dto) {
-        service.atualizarPerfil(usuarioLogado.getEmail(), dto);
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Atualizar o perfil do usuário autenticado", description = "Permite atualizar informações do perfil, exceto a password e a role.")
+    public ResponseEntity<UsuarioDTO.Response> atualizarPerfil(@AuthenticationPrincipal Usuario usuarioLogado, @Valid @RequestBody PerfilDTO.AtualizarPerfil dto) {
+        UsuarioDTO.Response response = service.atualizarPerfil(usuarioLogado.getEmail(), dto);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/me" )

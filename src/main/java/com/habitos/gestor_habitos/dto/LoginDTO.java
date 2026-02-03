@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 public class LoginDTO {
 
@@ -15,9 +14,9 @@ public class LoginDTO {
             @Email(message = "Formato de email inválido")
             String email,
             @Schema(description = "Senha do usuário", example = "SenhaSegura123!")
-            @NotBlank(message = "A senha não pode estar em branco")
-            @NotNull(message = "A senha não pode ser nula")
-            String senha
+            @NotBlank(message = "A password não pode estar em branco")
+            @NotNull(message = "A password não pode ser nula")
+            String password
     ){}
 
     @Schema(name = "LoginResponse",description = "Dados de resposta para login")

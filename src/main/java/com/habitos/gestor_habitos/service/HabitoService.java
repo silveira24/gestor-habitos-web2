@@ -30,9 +30,9 @@ public class HabitoService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResouceNotFoundException("Usuário não encontrado com o email: " + email));
         Habito novoHabito = new Habito();
-        novoHabito.setTitulo(habito.titulo());
-        novoHabito.setDescricao(habito.descricao());
-        novoHabito.setDiasSemana(habito.diasSemana());
+        novoHabito.setTitulo(habito.title());
+        novoHabito.setDescricao(habito.description());
+        novoHabito.setDiasSemana(habito.daysOfWeek());
         novoHabito.setUsuario(usuario);
 
         Habito habitoSalvo = habitoRepository.save(novoHabito);
@@ -66,14 +66,14 @@ public class HabitoService {
     public HabitoDTO.Response atualizarHabito(String email, String id, HabitoDTO.AtualizarHabito dto) {
         Habito habito = buscaHabitoPorIdEmail(email, id);
 
-        if (dto.titulo() != null && !dto.titulo().isBlank()) {
-            habito.setTitulo(dto.titulo());
+        if (dto.title() != null && !dto.title().isBlank()) {
+            habito.setTitulo(dto.title());
         }
-        if (dto.descricao() != null) {
-            habito.setDescricao(dto.descricao());
+        if (dto.description() != null) {
+            habito.setDescricao(dto.description());
         }
-        if (dto.diasSemana() != null && !dto.diasSemana().isEmpty()) {
-            habito.setDiasSemana(dto.diasSemana());
+        if (dto.daysOfWeek() != null && !dto.daysOfWeek().isEmpty()) {
+            habito.setDiasSemana(dto.daysOfWeek());
         }
 
         return new HabitoDTO.Response(habitoRepository.save(habito));

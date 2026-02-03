@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/habitos")
-@Tag(name = "Hábitos", description = "Operações relacionadas a hábitos")
+@RequestMapping("/v1/habits")
+@Tag(name = "Habits", description = "Operações relacionadas a hábitos")
 @SecurityRequirement(name = "bearer-key")
 public class HabitoController {
 

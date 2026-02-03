@@ -30,12 +30,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // rotas de autenticação
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         //rotas do h2-console
                         .requestMatchers("/h2-console/**").permitAll()
                         // rotas protegidas ADMIN
-                        .requestMatchers(HttpMethod.GET,"/api/v1/usuarios").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/api/v1/usuarios/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/users").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/users/**").hasAnyRole("ADMIN")
                         // rotas protegidas USER e ADMIN
                         .anyRequest().authenticated()
                 )

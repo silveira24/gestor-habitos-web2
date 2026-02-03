@@ -10,39 +10,39 @@ import jakarta.validation.constraints.Size;
 
 public class UsuarioDTO {
 
-    @Schema(name = "UsuarioRequest", description = "Dados necessários para criar um novo usuário.")
+    @Schema(name = "UserRequest", description = "Dados necessários para criar um novo usuário.")
     public record Request(
         @Schema(description = "Email do usuário.", example = "example@email.com")
         @NotBlank(message = "O email não pode estar em branco")
         @Email(message = "Formato de email inválido")
         String email,
         @Schema(description = "Senha do usuário.", example = "senha123")
-        @NotBlank(message = "A senha não pode estar em branco")
-        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-        @Size(max = 100, message = "A senha deve ter no máximo 100 caracteres")
-        String senha
+        @NotBlank(message = "A password não pode estar em branco")
+        @Size(min = 6, message = "A password deve ter no mínimo 6 caracteres")
+        @Size(max = 100, message = "A password deve ter no máximo 100 caracteres")
+        String password
     ) {}
 
-    @Schema(name = "AlterarSenhaRequest", description = "Dados necessários para atualizar a senha de um usuário.")
-    public record AlterarSenha(
+    @Schema(name = "ChangePasswordRequest", description = "Dados necessários para atualizar a password de um usuário.")
+    public record ChangePasswordRequest(
         @Schema(description = "Senha atual do usuário.", example = "senha123")
-        @NotBlank(message = "A senha atual não pode estar em branco")
-        String senhaAtual,
-        @Schema(description = "Nova senha do usuário.", example = "senha456")
-        @NotBlank(message = "A senha não pode estar em branco")
-        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-        @Size(max = 100, message = "A senha deve ter no máximo 100 caracteres")
-        String novaSenha
+        @NotBlank(message = "A password atual não pode estar em branco")
+        String currentPassword,
+        @Schema(description = "Nova password do usuário.", example = "senha456")
+        @NotBlank(message = "A password não pode estar em branco")
+        @Size(min = 6, message = "A password deve ter no mínimo 6 caracteres")
+        @Size(max = 100, message = "A password deve ter no máximo 100 caracteres")
+        String newPassword
     ) {}
 
-    @Schema(name = "AlterarRoleRequest", description = "Dados necessários para alterar a role de um usuário.")
+    @Schema(name = "ChangeRoleRequest", description = "Dados necessários para alterar a role de um usuário.")
     public record AlterarRole(
         @Schema(description = "Nova role do usuário.", example = "ADMIN")
         @NotNull(message = "A nova role é obrigatória")
-        RoleUsuario novaRole
+        RoleUsuario newRole
     ) {}
 
-    @Schema(name = "UsuarioResponse", description = "Dados retornados ao buscar ou listar usuários.")
+    @Schema(name = "UserResponse", description = "Dados retornados ao buscar ou listar usuários.")
     public record Response(
         @Schema(description = "ID do usuário.", example = "123e4567-e89b-12d3-a456-426614174000")
         String id,
@@ -51,13 +51,13 @@ public class UsuarioDTO {
         @Schema(description = "Role do usuário.", example = "USER")
         String role,
         @Schema(description = "Nome de exibição do perfil do usuário.", example = "Novo Usuário")
-        String nomeExibicao,
+        String displayName,
         @Schema(description = "Biografia do perfil do usuário.", example = "Apaixonado por hábitos saudáveis.")
         String bio,
         @Schema(description = "Nível do perfil do usuário.", example = "1")
-        Integer nivel,
+        Integer level,
         @Schema(description = "Pontos de experiência do perfil do usuário.", example = "120")
-        Integer pontosExperiencia
+        Integer xpPoints
     ) {
         public Response(Usuario usuario) {
             this(

@@ -16,41 +16,41 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
-@Tag(name = "Registros", description = "Operações relacionadas a registros de hábitos")
+@Tag(name = "Records", description = "Operações relacionadas a registros de hábitos")
 @SecurityRequirement(name = "bearer-key")
 public class RegistroController {
 
     @Autowired
     private RegistroService registroService;
 
-    @GetMapping("/habitos/registros/hoje")
+    @GetMapping("/habits/records/today")
     @Operation(summary = "Buscar registros do dia atual do usuário logado")
     public List<RegistroDTO.response> obterRegistrosDeHoje(@AuthenticationPrincipal Usuario usuarioLogado) {
         return registroService.buscarRegistrosPorUsuarioEPeriodo(usuarioLogado.getId(), java.time.LocalDate.now(), java.time.LocalDate.now());
     }
 
-    @GetMapping("/habitos/{habitoId}/registros")
+    @GetMapping("/habits/{habitId}/records")
     @Operation(summary = "Buscar registros de um hábito")
-    public List<RegistroDTO.response> obterRegistrosPorHabito(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitoId) {
-        return registroService.buscarRegistrosPorHabito(habitoId, usuarioLogado);
+    public List<RegistroDTO.response> obterRegistrosPorHabito(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId) {
+        return registroService.buscarRegistrosPorHabito(habitId, usuarioLogado);
     }
 
-    @PostMapping("/habitos/{habitoId}/registros/novo")
+    @PostMapping("/habits/{habitId}/records/extra")
     @Operation(summary = "Criar um registro extra")
-    public RegistroDTO.response criarRegistroExtra(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitoId, @Valid LocalDate data) {
-        return registroService.salvarRegistroExtra(usuarioLogado, habitoId, data);
+    public RegistroDTO.response criarRegistroExtra(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId, @Valid LocalDate data) {
+        return registroService.salvarRegistroExtra(usuarioLogado, habitId, data);
     }
 
-    @PatchMapping("habitos/{habitoId}/registros/{registroId}/concluir")
-    @Operation(summary = "Marcar registro como concluido")
-    public void concluirRegistro(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitoId, @PathVariable String registroId) {
-        registroService.marcarRegistroConcluido(usuarioLogado, habitoId, registroId);
+    @PatchMapping("habits/{habitId}/records/{recordId}/complete")
+    @Operation(summary = "Marcar registro como isCompleted")
+    public void concluirRegistro(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId, @PathVariable String recordId) {
+        registroService.marcarRegistroConcluido(usuarioLogado, habitId, recordId);
     }
 
-    @DeleteMapping("habitos/{habitoId}/registros/{registroId}")
+    @DeleteMapping("habits/{habitId}/records/{recordId}")
     @Operation(summary = "Deletar um registro")
-    public void deletarRegistro(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitoId, @PathVariable String registroId) {
-        registroService.deletarRegistro(usuarioLogado, habitoId, registroId);
+    public void deletarRegistro(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId, @PathVariable String recordId) {
+        registroService.deletarRegistro(usuarioLogado, habitId, recordId);
     }
 
 }
