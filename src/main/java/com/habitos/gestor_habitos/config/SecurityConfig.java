@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         //rotas do h2-console
                         .requestMatchers("/h2-console/**").permitAll()
+                        // rota para excluir conta própria
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/me").hasAnyRole("USER")
                         // rotas protegidas ADMIN
                         .requestMatchers(HttpMethod.GET,"/api/v1/users").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/v1/users/**").hasAnyRole("ADMIN")
