@@ -37,8 +37,8 @@ public class RegistroController {
 
     @PostMapping("/habits/{habitId}/records/extra")
     @Operation(summary = "Criar um registro extra")
-    public RegistroDTO.response criarRegistroExtra(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId, @Valid LocalDate data) {
-        return registroService.salvarRegistroExtra(usuarioLogado, habitId, data);
+    public RegistroDTO.response criarRegistroExtra(@AuthenticationPrincipal Usuario usuarioLogado, @PathVariable String habitId,@RequestParam @Valid LocalDate date) {
+        return registroService.salvarRegistroExtra(usuarioLogado, habitId, date);
     }
 
     @PatchMapping("habits/{habitId}/records/{recordId}/complete")
