@@ -4,14 +4,19 @@ import com.habitos.gestor_habitos.config.exceptions.ForbiddenException;
 import com.habitos.gestor_habitos.config.exceptions.ResouceNotFoundException;
 import com.habitos.gestor_habitos.dto.HabitoDTO;
 import com.habitos.gestor_habitos.model.Habito;
+import com.habitos.gestor_habitos.model.Registro;
 import com.habitos.gestor_habitos.model.Usuario;
 import com.habitos.gestor_habitos.repository.HabitoRepository;
+import com.habitos.gestor_habitos.repository.RegistroRepository;
 import com.habitos.gestor_habitos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class HabitoService {
@@ -24,6 +29,9 @@ public class HabitoService {
 
     @Autowired
     private RegistroService registroService;
+
+    @Autowired
+    private RegistroRepository registroRepository;
 
     @Transactional
     public HabitoDTO.Response criarHabito(String email, HabitoDTO.Request habito) {
@@ -73,7 +81,13 @@ public class HabitoService {
             habito.setDescricao(dto.description());
         }
         if (dto.daysOfWeek() != null && !dto.daysOfWeek().isEmpty()) {
+            List<Registro> registros = registroRepository.findAllByHabitoIdAndDataGreaterThanEqual(habito.getId(), LocalDate.now())
+                    .stream()
+                    .filter(registro -> !registro.getConcluido())
+                    .toList();
+            registroRepository.deleteAll(registros);
             habito.setDiasSemana(dto.daysOfWeek());
+            registroService.gerarRegistrosIniciais(habito);
         }
 
         return new HabitoDTO.Response(habitoRepository.save(habito));

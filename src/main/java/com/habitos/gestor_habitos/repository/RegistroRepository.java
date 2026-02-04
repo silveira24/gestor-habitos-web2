@@ -16,5 +16,6 @@ public interface RegistroRepository extends JpaRepository<Registro, String> {
             AND r.data BETWEEN :inicio AND :fim
             """)
     List<Registro> findAllByUsuarioAndPeriodo(String usuarioId, LocalDate inicio, LocalDate fim);
+    List<Registro> findAllByHabitoIdAndDataGreaterThanEqual(String habitoId, LocalDate data);
     boolean existsByHabitoAndData(Habito habito, LocalDate data);
 }
